@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>HEA Result System</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; padding: 20px; display: flex; justify-content: center; }
+        .main-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 550px; border-top: 8px solid #2c3e50; }
+        h2 { margin: 0; color: #1a252f; font-size: 1.8em; text-transform: uppercase; text-align: center; }
+        .info { font-size: 14px; color: #555; margin-top: 5px; text-align: center; }
+        .dev-by { font-size: 12px; color: #95a5a6; margin-top: 5px; font-weight: bold; text-align: center; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+        input { padding: 12px; width: 60%; border: 2px solid #dfe6e9; border-radius: 8px; font-size: 16px; outline: none; }
+        button { padding: 12px 20px; background: #2c3e50; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fff; }
+        th, td { border: 1px solid #ececec; padding: 10px; text-align: center; font-size: 14px; }
+        th { background-color: #f8f9fa; color: #333; }
+        .status-pass { color: #27ae60; font-weight: bold; border: 1.5px solid #27ae60; padding: 3px 10px; border-radius: 4px; }
+        .status-fail { color: #e74c3c; font-weight: bold; border: 1.5px solid #e74c3c; padding: 3px 10px; border-radius: 4px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #f1f1f1; }
+        .summary-item { text-align: center; font-weight: bold; font-size: 15px; }
+        .print-btn { width: 100%; margin-top: 20px; background: #27ae60; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; }
+        @media print { .no-print { display: none; } .main-card { box-shadow: none; border: 1px solid #000; width: 100%; } }
+    </style>
+</head>
+<body>
+
+<div class="main-card">
+    <h2>Harsh English Academy</h2>
+    <div class="info">Bhadewara, Karchhana, Prayagraj</div>
+    <div class="dev-by">Created By Nagmani Pandey</div>
+    
+    <div class="no-print">
+        <hr>
+        <div class="search-box">
+            <input type="text" id="roll" placeholder="Enter Roll Number..." onkeypress="if(event.key==='Enter') searchResult()">
+            <button onclick="searchResult()">Search</button>
+        </div>
+    </div>
+    <div id="output"></div>
+</div>
+
+<script>
+    let studentData = []; 
+
+    // डेटा लोड करने का फंक्शन
+    async function loadData() {
+        // यहाँ हमने आपका दिया हुआ URL सही तरीके से फिक्स कर दिया है
+        const url = "https://script.google.com/macros/s/AKfycbx934JKYK8-J1mRExJIrwWJEj283wGVphR2T9z44y1hUnq58mLEskPaxMg7Sid5TDV2/exec"; 
+        
+        try {
+            const res = await fetch(url + "?t=" + new Date().getTime());
+            studentData = await res.json();
+            console.log("Data loaded successfully!");
+        } catch (e) { 
+            console.log("Data load error: ", e);
+            document.getElementById("output").innerHTML = "<p style='color:orange;'>डेटा लोड करने में समस्या आ रही है। कृपया इंटरनेट चेक करें।</p>";
+        }
+    }
+    
+    loadData();
+
+    function searchResult(){
+        let roll = document.getElementById("roll").value.trim();
+        
+        if(studentData.length === 0) {
+            alert("डेटा अभी लोड हो रहा है, कृपया एक सेकंड रुकें...");
+            return;
+        }
+
+        let s = studentData.find(x => x.roll === roll);
+        let out = document.getElementById("output");
+        if(s){
+            let statusClass = (s.res === "PASS") ? "status-pass" : "status-fail";
+            let rows = "";
+            
+            // विषयों की लिस्ट और उनके नंबर
+            for(let sub in s.marks) {
+                // 17 से कम नंबर होने पर लाल रंग (50 में से पासिंग)
+                let style = (s.marks[sub] < 17) ? "color:red; font-weight:bold;" : "";
+                rows += `<tr><td style="text-align:left;">${sub}</td><td>50</td><td style="${style}">${s.marks[sub]}</td></tr>`;
+            }
+
+            out.innerHTML = `
+                <div style="margin-top:20px; border: 1px solid #eee; padding: 15px; border-radius: 10px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; color:#2c3e50;">
+                        <span>Student: ${s.name}</span>
+                        <span>Roll: ${s.roll}</span>
+                    </div>
+                    <table>
+                        <thead><tr><th>Subject</th><th>Max</th><th>Obtained</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                    <div class="summary-grid">
+                        <div class="summary-item">Total<br>${s.total} / 450</div>
+                        <div class="summary-item">Percent<br>${parseFloat(s.per).toFixed(2)}%</div>
+                        <div class="summary-item">Result<br><span class="${statusClass}">${s.res}</span></div>
+                    </div>
+                    <p style="text-align:center; margin-top:15px; font-weight:bold; color:#2c3e50; font-size:1.1em;">Final Grade: ${s.grd}</p>
+                    <button class="print-btn no-print" onclick="window.print()">Print Marksheet</button>
+                </div>`;
+
+        } else {
+            out.innerHTML = "<p style='color:red; text-align:center; font-weight:bold; margin-top:20px;'>Roll Number Not Found!</p>";
+        }
+    }
+</script>
+
+</body>
+</html>
