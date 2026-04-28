@@ -25,9 +25,9 @@
                 <td>{{ f['full_name'] }}</td>
                 <td>{{ f['class_name'] }}</td>
                 <td>{{ f['fee_type'] }}</td>
-                <td>{{ "%.0f"|format(f['amount']) }}</td>
-                <td>{{ "%.0f"|format(f['paid_amount']) }}</td>
-                <td class="text-danger fw-bold">{{ "%.0f"|format(f['amount'] - f['paid_amount']) }}</td>
+                <td>{{ "%.0f"|format(f['amount']|float) }}</td>
+                <td>{{ "%.0f"|format(f['paid_amount']|float) }}</td>
+                <td class="text-danger fw-bold">{{ "%.0f"|format(f['amount']|float - f['paid_amount']|float) }}</td>
                 <td>{{ f['due_date'] or 'N/A' }}</td>
                 <td>
                     <a href="{{ url_for('accountant.fee_slip', fee_id=f['id']) }}" class="btn btn-sm btn-outline-primary" title="Print Slip"><i class="bi bi-printer"></i></a>

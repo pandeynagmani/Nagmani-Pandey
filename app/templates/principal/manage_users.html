@@ -47,7 +47,7 @@
                         <td>{{ u['full_name'] }}</td>
                         <td>{{ u['username'] }}</td>
                         <td><span class="badge {% if u['role'] == 'principal' %}bg-danger{% elif u['role'] == 'teacher' %}bg-primary{% else %}bg-success{% endif %}">{{ u['role']|title }}</span></td>
-                        <td>{{ u['created_at'][:10] if u['created_at'] else 'N/A' }}</td>
+                        <td>{{ u['created_at']|string|truncate(10, True, '') if u['created_at'] else 'N/A' }}</td>
                         <td>
                             {% if u['id'] != current_user.id %}
                             <form method="POST" action="{{ url_for('principal.delete_user', user_id=u['id']) }}" style="display:inline;" onsubmit="return confirm('Delete this user?')">

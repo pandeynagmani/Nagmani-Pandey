@@ -43,7 +43,7 @@
                     </span>
                 </td>
                 <td>{{ a['method']|upper if a['method'] else 'Manual' }}</td>
-                <td>{{ a['marked_at'][:16] if a['marked_at'] else '' }}</td>
+                <td>{{ a['marked_at']|string|truncate(16, True, '') if a['marked_at'] else '' }}</td>
             </tr>
             {% endfor %}
             </tbody>

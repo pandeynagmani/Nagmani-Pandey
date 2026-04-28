@@ -68,8 +68,8 @@
                 {% for f in fees %}
                 <tr>
                     <td>{{ f['fee_type'] }}</td>
-                    <td>{{ "%.0f"|format(f['amount']) }}</td>
-                    <td>{{ "%.0f"|format(f['paid_amount']) }}</td>
+                    <td>{{ "%.0f"|format(f['amount']|float) }}</td>
+                    <td>{{ "%.0f"|format(f['paid_amount']|float) }}</td>
                     <td><span class="badge {% if f['status'] == 'paid' %}bg-success{% elif f['status'] == 'partial' %}bg-warning{% else %}bg-danger{% endif %}">{{ f['status']|title }}</span></td>
                 </tr>
                 {% endfor %}

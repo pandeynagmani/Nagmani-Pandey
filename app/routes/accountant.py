@@ -164,7 +164,7 @@ def fees():
         db.execute(
             "INSERT INTO fees (student_id, fee_type, amount, due_date, paid_amount, paid_date, "
             "receipt_no, status, collected_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (student_id, fee_type, amount, paid_amount, paid_date, due_date, receipt_no, status, current_user.id),
+            (student_id, fee_type, amount, due_date, paid_amount, paid_date, receipt_no, status, current_user.id),
         )
         db.commit()
         flash(f"Fee recorded. Receipt: {receipt_no}", "success")

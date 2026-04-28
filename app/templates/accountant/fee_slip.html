@@ -45,9 +45,9 @@
         <tbody>
         <tr>
             <td>{{ fee['fee_type'] }}</td>
-            <td>Rs. {{ "%.0f"|format(fee['amount']) }}</td>
-            <td>Rs. {{ "%.0f"|format(fee['paid_amount']) }}</td>
-            <td>Rs. {{ "%.0f"|format(fee['amount'] - fee['paid_amount']) }}</td>
+            <td>Rs. {{ "%.0f"|format(fee['amount']|float) }}</td>
+            <td>Rs. {{ "%.0f"|format(fee['paid_amount']|float) }}</td>
+            <td>Rs. {{ "%.0f"|format(fee['amount']|float - fee['paid_amount']|float) }}</td>
         </tr>
         </tbody>
     </table>
