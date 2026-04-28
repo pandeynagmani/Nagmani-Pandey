@@ -1,0 +1,52 @@
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'principal.dashboard' %}active{% endif %}" href="{{ url_for('principal.dashboard') }}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'principal.manage_users' %}active{% endif %}" href="{{ url_for('principal.manage_users') }}">
+            <i class="bi bi-people-fill"></i> Manage Users
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'principal.student_logs' %}active{% endif %}" href="{{ url_for('principal.student_logs') }}">
+            <i class="bi bi-clipboard-data"></i> Student Logs
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'principal.salary' %}active{% endif %}" href="{{ url_for('principal.salary') }}">
+            <i class="bi bi-currency-rupee"></i> Salary
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'accountant.dashboard' %}active{% endif %}" href="{{ url_for('accountant.dashboard') }}">
+            <i class="bi bi-calculator"></i> Accounts
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'accountant.admission' %}active{% endif %}" href="{{ url_for('accountant.admission') }}">
+            <i class="bi bi-person-plus"></i> Admission
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'accountant.fees' %}active{% endif %}" href="{{ url_for('accountant.fees') }}">
+            <i class="bi bi-cash-stack"></i> Fee Collection
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'accountant.pending_fees' %}active{% endif %}" href="{{ url_for('accountant.pending_fees') }}">
+            <i class="bi bi-exclamation-triangle"></i> Pending Fees
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'accountant.expenditure' %}active{% endif %}" href="{{ url_for('accountant.expenditure') }}">
+            <i class="bi bi-wallet2"></i> Expenditure
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'settings.settings_page' %}active{% endif %}" href="{{ url_for('settings.settings_page') }}">
+            <i class="bi bi-gear"></i> Settings
+        </a>
+    </li>
+</ul>

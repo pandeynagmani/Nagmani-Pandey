@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Student Detail{% endblock %}
+
+{% block sidebar %}{% include "components/principal_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-person"></i> Student Detail</h4>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card p-3 text-center">
+            {% if student['photo_path'] %}
+            <img src="{{ url_for('static', filename=student['photo_path']) }}" class="rounded-circle mx-auto" style="width: 120px; height: 120px; object-fit: cover;">
+            {% else %}
+            <div class="mx-auto bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                <i class="bi bi-person-fill text-white" style="font-size: 3rem;"></i>
+            </div>
+            {% endif %}
+            <h5 class="mt-3 mb-1">{{ student['full_name'] }}</h5>
+            <p class="text-muted">Roll: {{ student['roll_no'] }} | Class {{ student['class_name'] }}</p>
+
+            {% if student['qr_code_path'] %}
+            <img src="{{ url_for('static', filename=student['qr_code_path']) }}" style="width: 100px;">
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card p-3">
+            <h6>Personal Information</h6>
+            <table class="table table-sm">
+                <tr><td><strong>Father:</strong></td><td>{{ student['father_name'] }}</td></tr>
+                <tr><td><strong>Mother:</strong></td><td>{{ student['mother_name'] }}</td></tr>
+                <tr><td><strong>DOB:</strong></td><td>{{ student['dob'] }}</td></tr>
+                <tr><td><strong>Gender:</strong></td><td>{{ student['gender'] }}</td></tr>
+                <tr><td><strong>Phone:</strong></td><td>{{ student['phone'] }}</td></tr>
+                <tr><td><strong>Address:</strong></td><td>{{ student['address'] }}</td></tr>
+                <tr><td><strong>Aadhaar:</strong></td><td>{{ aadhaar }}</td></tr>
+                <tr><td><strong>RFID:</strong></td><td>{{ student['rfid_tag'] or 'Not assigned' }}</td></tr>
+                <tr><td><strong>Admission:</strong></td><td>{{ student['admission_date'] }}</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-2">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6>Recent Attendance</h6>
+            <table class="table table-sm">
+                <thead><tr><th>Date</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for a in attendance %}
+                <tr>
+                    <td>{{ a['date'] }}</td>
+                    <td><span class="badge {% if a['status'] == 'present' %}bg-success{% elif a['status'] == 'late' %}bg-warning{% else %}bg-danger{% endif %}">{{ a['status']|title }}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6>Fee Records</h6>
+            <table class="table table-sm">
+                <thead><tr><th>Type</th><th>Amount</th><th>Paid</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for f in fees %}
+                <tr>
+                    <td>{{ f['fee_type'] }}</td>
+                    <td>{{ "%.0f"|format(f['amount']|float) }}</td>
+                    <td>{{ "%.0f"|format(f['paid_amount']|float) }}</td>
+                    <td><span class="badge {% if f['status'] == 'paid' %}bg-success{% elif f['status'] == 'partial' %}bg-warning{% else %}bg-danger{% endif %}">{{ f['status']|title }}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('documents.id_card', student_id=student['id']) }}" class="btn btn-outline-primary"><i class="bi bi-person-badge"></i> ID Card</a>
+    <a href="{{ url_for('documents.admit_card', student_id=student['id']) }}" class="btn btn-outline-info"><i class="bi bi-card-heading"></i> Admit Card</a>
+    <a href="{{ url_for('documents.report_card', student_id=student['id']) }}" class="btn btn-outline-success"><i class="bi bi-file-earmark-text"></i> Report Card</a>
+</div>
+{% endblock %}

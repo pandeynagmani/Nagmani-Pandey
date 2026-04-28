@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Salary Management{% endblock %}
+
+{% block sidebar %}{% include "components/principal_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-currency-rupee"></i> Salary Management</h4>
+
+<div class="row g-3">
+    <div class="col-md-5">
+        <div class="card p-3">
+            <h6>Calculate Salary</h6>
+            <form method="POST">
+                <div class="mb-2">
+                    <label class="form-label">Teacher</label>
+                    <select name="teacher_id" class="form-select" required>
+                        <option value="">-- Select --</option>
+                        {% for t in teachers %}
+                        <option value="{{ t['id'] }}">{{ t['full_name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="form-label">Month</label>
+                        <select name="month" class="form-select">
+                            {% for m in ['01','02','03','04','05','06','07','08','09','10','11','12'] %}
+                            <option value="{{ m }}" {% if month == m %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Year</label>
+                        <input type="number" name="year" class="form-control" value="{{ year }}" min="2020" max="2030">
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Base Salary (Rs.)</label>
+                    <input type="number" name="base_salary" class="form-control" step="0.01" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Working Days</label>
+                    <input type="number" name="working_days" class="form-control" min="0" max="31" required>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-4">
+                        <label class="form-label">Advance</label>
+                        <input type="number" name="advance" class="form-control" step="0.01" value="0">
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Deductions</label>
+                        <input type="number" name="deductions" class="form-control" step="0.01" value="0">
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Bonus</label>
+                        <input type="number" name="bonus" class="form-control" step="0.01" value="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-calculator"></i> Calculate</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card p-3">
+            <h6>Salary Records ({{ month }}/{{ year }})</h6>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead><tr><th>Teacher</th><th>Base</th><th>KRA</th><th>Days</th><th>Payable</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>
+                    {% for s in salaries %}
+                    <tr>
+                        <td>{{ s['full_name'] }}</td>
+                        <td>{{ "%.0f"|format(s['base_salary']) }}</td>
+                        <td>{{ s['kra_score'] }}%</td>
+                        <td>{{ s['attendance_days'] }}/{{ s['working_days'] }}</td>
+                        <td class="fw-bold">Rs. {{ "%.0f"|format(s['total_payable']) }}</td>
+                        <td>
+                            {% if s['approved'] %}
+                            <span class="badge bg-success">Approved</span>
+                            {% else %}
+                            <span class="badge bg-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not s['approved'] %}
+                            <form method="POST" action="{{ url_for('principal.approve_salary', salary_id=s['id']) }}" style="display:inline;">
+                                <button class="btn btn-sm btn-success"><i class="bi bi-check-lg"></i></button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+
+{% block sidebar %}{% include "components/principal_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-gear"></i> System Settings</h4>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <form method="POST">
+                <h6><i class="bi bi-hdd-network"></i> Server Configuration</h6>
+                <div class="mb-2">
+                    <label class="form-label">Server IP Address</label>
+                    <input type="text" name="server_ip" class="form-control" value="{{ settings.get('server_ip', '0.0.0.0') }}" placeholder="e.g. 192.168.1.100">
+                    <small class="text-muted">IP address for client devices to connect. Use 0.0.0.0 to listen on all interfaces.</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Server Port</label>
+                    <input type="number" name="server_port" class="form-control" value="{{ settings.get('server_port', '5000') }}" min="1000" max="65535">
+                </div>
+
+                <hr>
+                <h6><i class="bi bi-nfc"></i> RFID Settings</h6>
+                <div class="mb-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="rfid_enabled" id="rfidToggle" {% if settings.get('rfid_enabled', '1') == '1' %}checked{% endif %}>
+                        <label class="form-check-label" for="rfidToggle">RFID Attendance Enabled</label>
+                    </div>
+                </div>
+
+                <hr>
+                <h6><i class="bi bi-clock"></i> Time Settings</h6>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="form-label">Morning Start</label>
+                        <input type="time" name="morning_start" class="form-control" value="{{ settings.get('morning_start', '07:30') }}">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Morning End</label>
+                        <input type="time" name="morning_end" class="form-control" value="{{ settings.get('morning_end', '09:00') }}">
+                    </div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label">Afternoon Start</label>
+                        <input type="time" name="afternoon_start" class="form-control" value="{{ settings.get('afternoon_start', '13:00') }}">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Afternoon End</label>
+                        <input type="time" name="afternoon_end" class="form-control" value="{{ settings.get('afternoon_end', '14:30') }}">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-save"></i> Save Settings</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6><i class="bi bi-info-circle"></i> Connection Info</h6>
+            <p>To connect other devices (Teacher/Principal tablets or phones) on the Local Wi-Fi Network:</p>
+            <ol>
+                <li>Ensure all devices are connected to the <strong>same Wi-Fi network</strong>.</li>
+                <li>Open a browser on the client device.</li>
+                <li>Enter: <code>http://{{ settings.get('server_ip', '0.0.0.0') }}:{{ settings.get('server_port', '5000') }}</code></li>
+                <li>Login with your credentials.</li>
+            </ol>
+            <div class="alert alert-info">
+                <strong>Tip:</strong> To find the server's IP, run <code>ipconfig</code> (Windows) or <code>ifconfig</code> (Linux) on the server machine. Use the IPv4 address from the Wi-Fi adapter.
+            </div>
+        </div>
+
+        <div class="card p-3 mt-3">
+            <h6><i class="bi bi-nfc"></i> RFID Information</h6>
+            <p>When RFID is enabled:</p>
+            <ul>
+                <li>Connect USB RFID scanner to the server machine.</li>
+                <li>Scanner acts as a keyboard input device.</li>
+                <li>Morning session: {{ settings.get('morning_start', '07:30') }} - {{ settings.get('morning_end', '09:00') }}</li>
+                <li>Afternoon session: {{ settings.get('afternoon_start', '13:00') }} - {{ settings.get('afternoon_end', '14:30') }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

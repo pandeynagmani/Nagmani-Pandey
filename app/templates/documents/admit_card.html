@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Admit Card - {{ student['full_name'] }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admit-card { max-width: 700px; margin: 0 auto; border: 2px solid #1a3a5c; background: #fff; }
+    .admit-header { background: #1a3a5c; color: #fff; text-align: center; padding: 15px; }
+    .admit-header h4 { margin: 0; font-weight: 700; }
+    .admit-header p { margin: 0; font-size: .85rem; }
+    .admit-header h5 { margin: 10px 0 0; font-size: 1rem; text-decoration: underline; }
+    .admit-body { padding: 20px; }
+    .admit-footer { text-align: center; font-size: .75rem; color: #888; border-top: 1px solid #eee; padding: 8px; }
+    @media print { .admit-card { border: 2px solid #000; page-break-inside: avoid; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-3 no-print">
+    <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer"></i> Print Admit Card</button>
+    <a href="{{ url_for('accountant.students') }}" class="btn btn-secondary ms-2">Back</a>
+</div>
+
+<div class="admit-card">
+    <div class="admit-header">
+        <h4>Maa Kamala Public School</h4>
+        <p>Rokdi, Karchhana, Prayagraj</p>
+        <h5>ADMIT CARD - {{ exam_name }}</h5>
+    </div>
+    <div class="admit-body">
+        <div class="row mb-3">
+            <div class="col-8">
+                <table class="table table-sm table-borderless">
+                    <tr><td><strong>Name:</strong></td><td>{{ student['full_name'] }}</td></tr>
+                    <tr><td><strong>Roll No:</strong></td><td>{{ student['roll_no'] }}</td></tr>
+                    <tr><td><strong>Class:</strong></td><td>{{ student['class_name'] }}</td></tr>
+                    <tr><td><strong>Father:</strong></td><td>{{ student['father_name'] }}</td></tr>
+                </table>
+            </div>
+            <div class="col-4 text-center">
+                {% if student['photo_path'] %}
+                <img src="{{ url_for('static', filename=student['photo_path']) }}" style="width: 90px; height: 110px; object-fit: cover; border: 1px solid #ccc;">
+                {% else %}
+                <div style="width: 90px; height: 110px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                    <span class="text-muted">Photo</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if subjects %}
+        <table class="table table-bordered table-sm">
+            <thead><tr><th>#</th><th>Subject</th><th>Date</th><th>Time</th></tr></thead>
+            <tbody>
+            {% for s in subjects %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ s['subject'] }}</td>
+                <td>_______________</td>
+                <td>_______________</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <div class="row mt-4">
+            <div class="col-4"><p>_______________<br><small>Class Teacher</small></p></div>
+            <div class="col-4 text-center"><p>_______________<br><small>Exam Controller</small></p></div>
+            <div class="col-4 text-end"><p>_______________<br><small>Principal</small></p></div>
+        </div>
+    </div>
+    <div class="admit-footer">Developed and Powered by Sant Digital Solution</div>
+</div>
+{% endblock %}

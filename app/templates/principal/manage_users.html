@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Manage Users{% endblock %}
+
+{% block sidebar %}{% include "components/principal_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-people-fill"></i> Manage Users</h4>
+
+<div class="row g-3">
+    <div class="col-md-5">
+        <div class="card p-3">
+            <h6>Add New User</h6>
+            <form method="POST">
+                <div class="mb-2">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="full_name" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required minlength="4">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <select name="role" class="form-select" required>
+                        <option value="teacher">Teacher</option>
+                        <option value="accountant">Accountant</option>
+                        <option value="principal">Principal</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-person-plus"></i> Add User</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card p-3">
+            <h6>All Users</h6>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Created</th><th>Action</th></tr></thead>
+                    <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>{{ u['full_name'] }}</td>
+                        <td>{{ u['username'] }}</td>
+                        <td><span class="badge {% if u['role'] == 'principal' %}bg-danger{% elif u['role'] == 'teacher' %}bg-primary{% else %}bg-success{% endif %}">{{ u['role']|title }}</span></td>
+                        <td>{{ u['created_at']|string|truncate(10, True, '') if u['created_at'] else 'N/A' }}</td>
+                        <td>
+                            {% if u['id'] != current_user.id %}
+                            <form method="POST" action="{{ url_for('principal.delete_user', user_id=u['id']) }}" style="display:inline;" onsubmit="return confirm('Delete this user?')">
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

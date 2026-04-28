@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Principal Dashboard{% endblock %}
+
+{% block sidebar %}{% include "components/principal_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-speedometer2"></i> Principal Dashboard</h4>
+<p class="text-muted">{{ today }}</p>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card p-3">
+            <div class="stat-label">Total Students</div>
+            <div class="stat-value">{{ total_students }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card p-3" style="border-left-color: #27ae60;">
+            <div class="stat-label">Total Teachers</div>
+            <div class="stat-value text-success">{{ total_teachers }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card p-3" style="border-left-color: #3498db;">
+            <div class="stat-label">Present Today</div>
+            <div class="stat-value" style="color: #3498db;">{{ present_today }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card p-3" style="border-left-color: #e74c3c;">
+            <div class="stat-label">Pending Fees</div>
+            <div class="stat-value text-danger">{{ "%.0f"|format(total_fees_pending) }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6><i class="bi bi-lightning"></i> Quick Actions</h6>
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('principal.student_logs') }}" class="btn btn-outline-primary"><i class="bi bi-clipboard-data"></i> Student Attendance Logs</a>
+                <a href="{{ url_for('principal.salary') }}" class="btn btn-outline-primary"><i class="bi bi-currency-rupee"></i> Manage Salary</a>
+                <a href="{{ url_for('principal.manage_users') }}" class="btn btn-outline-primary"><i class="bi bi-people-fill"></i> Manage Users</a>
+                <a href="{{ url_for('accountant.pending_fees') }}" class="btn btn-outline-danger"><i class="bi bi-exclamation-triangle"></i> Pending Fees & WhatsApp Alerts</a>
+                <a href="{{ url_for('settings.settings_page') }}" class="btn btn-outline-secondary"><i class="bi bi-gear"></i> System Settings</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6><i class="bi bi-clock-history"></i> Recent Teacher Logs</h6>
+            {% if recent_logs %}
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead><tr><th>Date</th><th>Teacher</th><th>Class</th><th>Subject</th><th>Topic</th></tr></thead>
+                    <tbody>
+                    {% for log in recent_logs %}
+                    <tr>
+                        <td>{{ log['date'] }}</td>
+                        <td>{{ log['teacher_name'] }}</td>
+                        <td>{{ log['class_name'] }}</td>
+                        <td>{{ log['subject'] }}</td>
+                        <td>{{ log['topic'] }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No recent logs.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

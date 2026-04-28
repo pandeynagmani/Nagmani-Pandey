@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Report Card - {{ student['full_name'] }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .report-card { max-width: 700px; margin: 0 auto; border: 2px solid #1a3a5c; background: #fff; }
+    .report-header { background: #1a3a5c; color: #fff; text-align: center; padding: 15px; }
+    .report-header h4 { margin: 0; font-weight: 700; }
+    .report-header p { margin: 0; font-size: .85rem; }
+    .report-body { padding: 20px; }
+    .report-footer { text-align: center; font-size: .75rem; color: #888; border-top: 1px solid #eee; padding: 8px; }
+    .grade-A { color: #27ae60; font-weight: bold; }
+    .grade-B { color: #3498db; font-weight: bold; }
+    .grade-C { color: #e8a838; font-weight: bold; }
+    .grade-D { color: #e67e22; font-weight: bold; }
+    .grade-F { color: #e74c3c; font-weight: bold; }
+    @media print { .report-card { border: 2px solid #000; page-break-inside: avoid; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-3 no-print">
+    <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer"></i> Print Report Card</button>
+    <a href="{{ url_for('accountant.students') }}" class="btn btn-secondary ms-2">Back</a>
+</div>
+
+<div class="report-card">
+    <div class="report-header">
+        <h4>Maa Kamala Public School</h4>
+        <p>Rokdi, Karchhana, Prayagraj</p>
+        <h5 style="margin-top: 8px; text-decoration: underline;">REPORT CARD - {{ exam_name }}</h5>
+    </div>
+    <div class="report-body">
+        <div class="row mb-3">
+            <div class="col-8">
+                <table class="table table-sm table-borderless">
+                    <tr><td><strong>Name:</strong></td><td>{{ student['full_name'] }}</td></tr>
+                    <tr><td><strong>Roll No:</strong></td><td>{{ student['roll_no'] }}</td></tr>
+                    <tr><td><strong>Class:</strong></td><td>{{ student['class_name'] }}</td></tr>
+                    <tr><td><strong>Father:</strong></td><td>{{ student['father_name'] }}</td></tr>
+                </table>
+            </div>
+            <div class="col-4 text-center">
+                {% if student['photo_path'] %}
+                <img src="{{ url_for('static', filename=student['photo_path']) }}" style="width: 80px; height: 100px; object-fit: cover; border: 1px solid #ccc;">
+                {% endif %}
+            </div>
+        </div>
+
+        {% if results %}
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr><th>#</th><th>Subject</th><th>Max Marks</th><th>Obtained</th><th>Grade</th></tr>
+            </thead>
+            <tbody>
+            {% for r in results %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ r['subject'] }}</td>
+                <td>{{ r['max_marks']|int }}</td>
+                <td>{{ r['obtained_marks']|int }}</td>
+                <td class="grade-{{ r['grade'][0] if r['grade'] else 'C' }}">{{ r['grade'] or '-' }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="fw-bold">
+                <td colspan="2">Total</td>
+                <td>{{ total_max|int }}</td>
+                <td>{{ total_obtained|int }}</td>
+                <td>{{ percentage }}%</td>
+            </tr>
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-info">No exam results found for this student.</div>
+        {% endif %}
+
+        <div class="row mt-3">
+            <div class="col-6">
+                <p><strong>Attendance:</strong> {{ present_att }}/{{ total_att }} days</p>
+            </div>
+            <div class="col-6">
+                <p><strong>Percentage:</strong> {{ percentage }}%</p>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-4"><p>_______________<br><small>Class Teacher</small></p></div>
+            <div class="col-4 text-center"><p>_______________<br><small>Exam Controller</small></p></div>
+            <div class="col-4 text-end"><p>_______________<br><small>Principal</small></p></div>
+        </div>
+    </div>
+    <div class="report-footer">Developed and Powered by Sant Digital Solution</div>
+</div>
+{% endblock %}
