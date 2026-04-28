@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Fee Slip{% endblock %}
+
+{% block sidebar %}
+    {% if current_user.role == 'principal' %}
+        {% include "components/principal_sidebar.html" %}
+    {% else %}
+        {% include "components/accountant_sidebar.html" %}
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .slip-container { max-width: 600px; margin: 0 auto; border: 2px solid #1a3a5c; padding: 20px; background: #fff; }
+    .slip-header { text-align: center; border-bottom: 2px solid #1a3a5c; padding-bottom: 10px; margin-bottom: 15px; }
+    .slip-header h4 { color: #1a3a5c; margin: 0; font-weight: 700; }
+    .slip-header p { margin: 0; font-size: .85rem; color: #555; }
+    .slip-table th { background: #f0f2f5; }
+    .slip-footer { text-align: center; margin-top: 15px; font-size: .75rem; color: #888; border-top: 1px dashed #ccc; padding-top: 10px; }
+    @media print { .slip-container { border: 2px solid #000; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-3 no-print">
+    <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer"></i> Print Slip</button>
+    <a href="{{ url_for('accountant.fees') }}" class="btn btn-secondary ms-2">Back</a>
+</div>
+
+<div class="slip-container">
+    <div class="slip-header">
+        <h4>Maa Kamala Public School</h4>
+        <p>Rokdi, Karchhana, Prayagraj</p>
+        <h5 class="mt-2">Fee Receipt</h5>
+    </div>
+
+    <table class="table table-borderless table-sm mb-3">
+        <tr><td><strong>Receipt No:</strong></td><td>{{ fee['receipt_no'] }}</td><td><strong>Date:</strong></td><td>{{ fee['paid_date'] or 'N/A' }}</td></tr>
+        <tr><td><strong>Student:</strong></td><td>{{ fee['full_name'] }}</td><td><strong>Roll No:</strong></td><td>{{ fee['roll_no'] }}</td></tr>
+        <tr><td><strong>Father:</strong></td><td>{{ fee['father_name'] }}</td><td><strong>Class:</strong></td><td>{{ fee['class_name'] }}</td></tr>
+    </table>
+
+    <table class="table table-bordered slip-table">
+        <thead><tr><th>Fee Type</th><th>Total Amount</th><th>Paid</th><th>Balance</th></tr></thead>
+        <tbody>
+        <tr>
+            <td>{{ fee['fee_type'] }}</td>
+            <td>Rs. {{ "%.0f"|format(fee['amount']) }}</td>
+            <td>Rs. {{ "%.0f"|format(fee['paid_amount']) }}</td>
+            <td>Rs. {{ "%.0f"|format(fee['amount'] - fee['paid_amount']) }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="row mt-4">
+        <div class="col-6"><p>_________________________<br><small>Accountant Signature</small></p></div>
+        <div class="col-6 text-end"><p>_________________________<br><small>Principal Signature</small></p></div>
+    </div>
+
+    <div class="slip-footer">
+        Developed and Powered by Sant Digital Solution
+    </div>
+</div>
+{% endblock %}

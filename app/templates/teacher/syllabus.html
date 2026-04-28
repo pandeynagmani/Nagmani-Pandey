@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Syllabus Tracker{% endblock %}
+
+{% block sidebar %}{% include "components/teacher_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-book"></i> Syllabus Tracker</h4>
+
+<div class="row g-3">
+    <div class="col-md-5">
+        <div class="card p-3">
+            <h6>Add / Update Syllabus</h6>
+            <form method="POST">
+                <div class="mb-2">
+                    <label class="form-label">Class</label>
+                    <select name="class_id" class="form-select" required>
+                        <option value="">-- Select --</option>
+                        {% for c in classes %}
+                        <option value="{{ c['id'] }}">Class {{ c['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Subject</label>
+                    <input type="text" name="subject" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Total Topics</label>
+                    <input type="number" name="total_topics" class="form-control" min="0" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Completed Topics</label>
+                    <input type="number" name="completed_topics" class="form-control" min="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-save"></i> Save</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card p-3">
+            <h6>Current Syllabus Progress</h6>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead><tr><th>Class</th><th>Subject</th><th>Progress</th><th>%</th></tr></thead>
+                    <tbody>
+                    {% for s in syllabus_rows %}
+                    <tr>
+                        <td>{{ s['class_name'] }}</td>
+                        <td>{{ s['subject'] }}</td>
+                        <td>{{ s['completed_topics'] }} / {{ s['total_topics'] }}</td>
+                        <td>
+                            {% set pct = (s['completed_topics'] / s['total_topics'] * 100)|round(1) if s['total_topics'] > 0 else 0 %}
+                            <div class="progress" style="height: 18px;">
+                                <div class="progress-bar" style="width: {{ pct }}%">{{ pct }}%</div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
